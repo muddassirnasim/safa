@@ -3,7 +3,7 @@ name: Deploy WordPress Theme to SVN
 on:
   push:
     tags:
-      - "*"  # Matches tags like 1.0.8, 2.1.0, etc.
+      - "*"  # Match non-v tags like 1.0.8, 1.0.9 etc.
 
 jobs:
   deploy:
@@ -19,7 +19,7 @@ jobs:
       - name: Export theme files (ignore dev files)
         run: |
           mkdir export
-          rsync -av --exclude='.git*' --exclude='node_modules' --exclude='src' --exclude='tests' ./ export/
+          rsync -av --exclude='.git*' --exclude='.github' --exclude='node_modules' ./ export/
 
       - name: Checkout SVN repo
         run: |
