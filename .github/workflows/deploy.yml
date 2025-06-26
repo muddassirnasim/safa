@@ -19,14 +19,27 @@ jobs:
       - name: Export theme files (ignore dev files)
         run: |
           mkdir export
-          rsync -av --exclude-from=".distignore" ./ export/
+          rsync -r --exclude='.git*' --exclude='.github' --exclude='node_modules' \
+                --exclude='webpack.config.js' --exclude='package*.json' \
+                --exclude='.distignore' --exclude='.env' \
+                ./ export/
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp \
+          svn checkout https://themes.svn.wordpress.org/safa svn-wp \
             --username "${{ secrets.SVN_USERNAME }}" \
             --password "${{ secrets.SVN_PASSWORD }}" \
             --non-interactive
+
+      - name: Create tags folder if missing
+        run: |
+          mkdir -p svn-wp/tags
+          svn add svn-wp/tags || true
+          cd svn-wp
+          svn commit -m "Create tags directory" \
+            --username "${{ secrets.SVN_USERNAME }}" \
+            --password "${{ secrets.SVN_PASSWORD }}" \
+            --non-interactive || true
 
       - name: Copy to versioned tag directory
         run: |
