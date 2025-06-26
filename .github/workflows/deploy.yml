@@ -3,7 +3,7 @@ name: Deploy WordPress Theme to SVN
 on:
   push:
     tags:
-      - "v*"
+      - "*"  # Matches tags like 1.0.8, 2.1.0, etc.
 
 jobs:
   deploy:
@@ -23,7 +23,10 @@ jobs:
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
+          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp \
+            --username "${{ secrets.SVN_USERNAME }}" \
+            --password "${{ secrets.SVN_PASSWORD }}" \
+            --non-interactive
 
       - name: Copy to versioned tag directory
         run: |
