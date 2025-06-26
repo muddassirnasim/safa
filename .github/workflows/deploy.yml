@@ -23,25 +23,29 @@ jobs:
 
       - name: Checkout SVN repo
         run: |
-          svn checkout "https://themes.svn.wordpress.org/safa/" svn-wp
-        env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
 
       - name: Replace trunk with export (safe create)
         run: |
-          mkdir -p svn-wp/trunk
-          rm -rf svn-wp/trunk/*
+          rm -rf svn-wp/trunk
+          mkdir svn-wp/trunk
           cp -R export/* svn-wp/trunk/
 
       - name: Commit trunk to SVN
         run: |
           cd svn-wp
           svn add --force trunk
-          svn commit -m "Deploy new theme version" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
+          svn commit -m "Deploy new theme version" \
+            --username "${{ secrets.SVN_USERNAME }}" \
+            --password "${{ secrets.SVN_PASSWORD }}" \
+            --non-interactive
 
       - name: Tag SVN version
         run: |
-          cd svn-wp
-          svn cp trunk tags/${GITHUB_REF_NAME} --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
-          svn commit -m "Tagging version ${GITHUB_REF_NAME}" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
+          VERSION="${GITHUB_REF#refs/tags/}"
+          svn cp https://themes.svn.wordpress.org/safa/trunk \
+            https://themes.svn.wordpress.org/safa/tags/$VERSION \
+            -m "Tagging version $VERSION" \
+            --username "${{ secrets.SVN_USERNAME }}" \
+            --password "${{ secrets.SVN_PASSWORD }}" \
+            --non-interactive
