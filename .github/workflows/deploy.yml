@@ -3,7 +3,7 @@ name: Deploy WordPress Theme to SVN
 on:
   push:
     tags:
-      - "v*"
+      - "*"  # This matches all tags, like 1.0.8 (but NOT v1.0.8 if you avoid tagging that way)
 
 jobs:
   deploy:
@@ -19,33 +19,17 @@ jobs:
       - name: Export theme files (ignore dev files)
         run: |
           mkdir export
-          rsync -r --exclude='.git*' --exclude='.github' --exclude='node_modules' \
-                --exclude='webpack.config.js' --exclude='package*.json' \
-                --exclude='.distignore' --exclude='.env' \
-                ./ export/
+          rsync -av --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='*.zip' ./ export/
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://themes.svn.wordpress.org/safa svn-wp \
-            --username "${{ secrets.SVN_USERNAME }}" \
-            --password "${{ secrets.SVN_PASSWORD }}" \
-            --non-interactive
-
-      - name: Create tags folder if missing
-        run: |
-          mkdir -p svn-wp/tags
-          svn add svn-wp/tags || true
-          cd svn-wp
-          svn commit -m "Create tags directory" \
-            --username "${{ secrets.SVN_USERNAME }}" \
-            --password "${{ secrets.SVN_PASSWORD }}" \
-            --non-interactive || true
+          svn checkout https://plugins.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
 
       - name: Copy to versioned tag directory
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
           mkdir -p svn-wp/tags/$VERSION
-          cp -R export/* svn-wp/tags/$VERSION/
+          cp -a export/. svn-wp/tags/$VERSION/
 
       - name: Commit versioned tag to SVN
         run: |
