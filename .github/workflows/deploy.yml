@@ -18,26 +18,30 @@ jobs:
 
       - name: Export theme files (ignore dev files)
         run: |
-          mkdir theme-export
-          rsync -a --exclude-from=".distignore" ./ theme-export/
+          mkdir export
+          rsync -av --exclude-from=".distignore" ./ export/
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp
+          svn checkout "https://themes.svn.wordpress.org/safa/" svn-wp
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
 
       - name: Replace trunk with export (safe create)
         run: |
           mkdir -p svn-wp/trunk
           rm -rf svn-wp/trunk/*
-          cp -r theme-export/* svn-wp/trunk/
+          cp -R export/* svn-wp/trunk/
 
       - name: Commit trunk to SVN
         run: |
           cd svn-wp
-          svn add trunk/* --force
-          svn commit -m "Deploying theme version ${{ github.ref_name }}"
+          svn add --force trunk
+          svn commit -m "Deploy new theme version" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
 
       - name: Tag SVN version
         run: |
           cd svn-wp
-          svn copy ^/trunk ^/tags/${{ github.ref_name }} -m "Tagging version ${{ github.ref_name }}"
+          svn cp trunk tags/${GITHUB_REF_NAME} --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache
+          svn commit -m "Tagging version ${GITHUB_REF_NAME}" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache

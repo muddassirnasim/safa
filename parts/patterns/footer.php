@@ -35,6 +35,6 @@ declare( strict_types = 1 );
 <!-- /wp:social-links -->
 
 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontWeight":"300","fontStyle":"normal"},"spacing":{"margin":{"top":"30px"}}},"fontSize":"x-small"} -->
-<p class="has-text-align-center has-x-small-font-size" style="margin-top:30px;font-style:normal;font-weight:300">Safa Theme by <a href="https://mrnasim.com/">Nasim Miah</a> ● Designed with <a href="https://wordpress.org" rel="nofollow">WordPress</a></p>
+<p class="has-text-align-center has-x-small-font-size" style="margin-top:30px;font-style:normal;font-weight:300">Safa Themes by <a href="https://mrnasim.com">Nasim Miah</a> ● Designed with <a href="https://wordpress.org" rel="nofollow">WordPress</a></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
