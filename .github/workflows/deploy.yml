@@ -1,0 +1,42 @@
+name: Deploy WordPress Theme to SVN
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install SVN
+        run: sudo apt-get install subversion
+
+      - name: Export theme files (ignore dev files)
+        run: |
+          mkdir theme-export
+          rsync -a --exclude-from=".distignore" ./ theme-export/
+
+      - name: Checkout SVN repo
+        run: |
+          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp
+
+      - name: Replace trunk with export
+        run: |
+          rm -rf svn-wp/trunk/*
+          cp -r theme-export/* svn-wp/trunk/
+
+      - name: Commit trunk to SVN
+        run: |
+          cd svn-wp
+          svn add trunk/* --force
+          svn commit -m "Deploying theme version ${{ github.ref_name }}"
+
+      - name: Tag SVN version
+        run: |
+          cd svn-wp
+          svn copy ^/trunk ^/tags/${{ github.ref_name }} -m "Tagging version ${{ github.ref_name }}"
