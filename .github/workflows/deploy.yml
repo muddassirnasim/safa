@@ -3,7 +3,7 @@ name: Deploy WordPress Theme to SVN
 on:
   push:
     tags:
-      - "*"  # This matches all tags, like 1.0.8 (but NOT v1.0.8 if you avoid tagging that way)
+      - "v*"
 
 jobs:
   deploy:
@@ -14,16 +14,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install SVN
-        run: sudo apt-get install subversion
+        run: sudo apt-get install subversion -y
 
       - name: Export theme files (ignore dev files)
         run: |
           mkdir export
-          rsync -av --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='*.zip' ./ export/
+          rsync -av --exclude='.git*' --exclude='node_modules' --exclude='src' --exclude='tests' ./ export/
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://plugins.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
+          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
 
       - name: Copy to versioned tag directory
         run: |
