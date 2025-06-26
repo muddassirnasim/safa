@@ -1,0 +1,21 @@
+a {
+    transition: all 0.3s ease-in-out;
+}
+
+/* PRIMARY NAV LIST */
+.primary-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.primary-nav-list.footer-nav {
+    justify-content: center;
+}
+
+.wp-block-navigation__responsive-container {
+    padding: 30px !important;
+}

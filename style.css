@@ -1,0 +1,46 @@
+/*
+Theme Name: Safa
+Theme URI: https://wordpress.org/themes/safa/
+Author: muddassirnasim
+Author URI: https://profiles.wordpress.org/muddassirnasim/
+Description: Safa is a minimal and lightweight WordPress block theme, designed with full site editing capabilities. It’s perfect for achieving top scores on tools like Google PageSpeed, GTmetrix, and Pingdom. Ideal for blogs, this responsive theme offers four unique styles, easy-to-read fonts, well-balanced color schemes, and a built-in dark mode. Best of all, it’s free to use!
+Requires at least: 6.0
+Tested up to: 6.8
+Requires PHP: 5.7
+Version: 1.0.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: safa
+Tags: blog, one-column, wide-blocks, block-styles, featured-images, full-site-editing, rtl-language-support, threaded-comments, translation-ready
+*/
+
+a {
+	transition: all 0.3s ease-in-out;
+}
+
+/*
+* Control the hover stylings of outline block style.
+*/
+.wp-block-button.is-style-outline>.wp-block-button__link:not(.has-background):hover {
+	background-color: var(--wp--preset--color--accent-2);
+	border-color: var(--wp--preset--color--accent-2);
+	color: var(--wp--preset--color--background);
+}
+
+/* PRIMARY NAV LIST */
+.primary-nav-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px 15px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.primary-nav-list.footer-nav {
+	justify-content: center;
+}
+
+.wp-block-navigation__responsive-container {
+	padding: 30px !important;
+}
