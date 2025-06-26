@@ -1,0 +1,20 @@
+# Ignore system and temp files
+.DS_Store
+Thumbs.db
+
+# Node and build files
+node_modules/
+dist/
+.env
+
+# Editor folders
+.vscode/
+.idea/
+
+# GitHub Actions config (optional for SVN)
+.github/
+.distignore
+
+# Logs
+*.log
+# Git ignore rules
