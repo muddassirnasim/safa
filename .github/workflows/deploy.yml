@@ -23,29 +23,23 @@ jobs:
 
       - name: Checkout SVN repo
         run: |
-          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp --username "${{ secrets.SVN_USERNAME }}" --password "${{ secrets.SVN_PASSWORD }}" --non-interactive
-
-      - name: Replace trunk with export (safe create)
-        run: |
-          rm -rf svn-wp/trunk
-          mkdir svn-wp/trunk
-          cp -R export/* svn-wp/trunk/
-
-      - name: Commit trunk to SVN
-        run: |
-          cd svn-wp
-          svn add --force trunk
-          svn commit -m "Deploy new theme version" \
+          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp \
             --username "${{ secrets.SVN_USERNAME }}" \
             --password "${{ secrets.SVN_PASSWORD }}" \
             --non-interactive
 
-      - name: Tag SVN version
+      - name: Copy to versioned tag directory
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
-          svn cp https://themes.svn.wordpress.org/safa/trunk \
-            https://themes.svn.wordpress.org/safa/tags/$VERSION \
-            -m "Tagging version $VERSION" \
+          mkdir -p svn-wp/tags/$VERSION
+          cp -R export/* svn-wp/tags/$VERSION/
+
+      - name: Commit versioned tag to SVN
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          cd svn-wp
+          svn add --force tags/$VERSION
+          svn commit -m "Deploy version $VERSION" \
             --username "${{ secrets.SVN_USERNAME }}" \
             --password "${{ secrets.SVN_PASSWORD }}" \
             --non-interactive
