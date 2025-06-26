@@ -1,6 +1,5 @@
 (
 echo .git/
-echo .github/
 echo .vscode/
 echo .idea/
 echo node_modules/

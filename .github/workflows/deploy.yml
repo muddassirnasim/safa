@@ -25,8 +25,9 @@ jobs:
         run: |
           svn checkout https://themes.svn.wordpress.org/safa/ svn-wp
 
-      - name: Replace trunk with export
+      - name: Replace trunk with export (safe create)
         run: |
+          mkdir -p svn-wp/trunk
           rm -rf svn-wp/trunk/*
           cp -r theme-export/* svn-wp/trunk/
 

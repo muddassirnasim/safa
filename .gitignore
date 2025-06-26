@@ -12,7 +12,7 @@ dist/
 .idea/
 
 # GitHub Actions config (optional for SVN)
-.github/
+
 .distignore
 
 # Logs
