@@ -3,43 +3,22 @@ name: Deploy WordPress Theme to SVN
 on:
   push:
     tags:
-      - "*"  # Match non-v tags like 1.0.8, 1.0.9 etc.
+      - "*"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install SVN
-        run: sudo apt-get install subversion -y
+      # If you ever add build steps (npm, SCSS, etc.), put them here.
+      # For now the raw theme files are fine.
 
-      - name: Export theme files (ignore dev files)
-        run: |
-          mkdir export
-          rsync -av --exclude='.git*' --exclude='.github' --exclude='node_modules' ./ export/
-
-      - name: Checkout SVN repo
-        run: |
-          svn checkout https://themes.svn.wordpress.org/safa/ svn-wp \
-            --username "${{ secrets.SVN_USERNAME }}" \
-            --password "${{ secrets.SVN_PASSWORD }}" \
-            --non-interactive
-
-      - name: Copy to versioned tag directory
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
-          mkdir -p svn-wp/tags/$VERSION
-          cp -a export/. svn-wp/tags/$VERSION/
-
-      - name: Commit versioned tag to SVN
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
-          cd svn-wp
-          svn add --force tags/$VERSION
-          svn commit -m "Deploy version $VERSION" \
-            --username "${{ secrets.SVN_USERNAME }}" \
-            --password "${{ secrets.SVN_PASSWORD }}" \
-            --non-interactive
+      - name: Deploy theme to WordPress.org
+        uses: Codeinwp/action-wordpress-theme-deploy@primary
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: safa
